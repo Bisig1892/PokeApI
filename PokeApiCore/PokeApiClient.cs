@@ -24,8 +24,24 @@ namespace PokeApiCore
         public async Task<Pokemon> GetPokemonByName(string name)
         {
             name = name.ToLower(); // Pokemon name must be lowercase
-                string url = $"https://pokeapi.co/api/v2/pokemon/{name}";
-                HttpResponseMessage response = await client.GetAsync(url);
+
+            return await GetPokemonByNameOrId(name);
+        }
+
+        /// <summary>
+        /// Gets a Pokemon by their Pokedex Id number
+        /// </summary>
+        /// <param name="id">The Id of the Pokemon</param>
+        /// <returns></returns>
+        public async Task<Pokemon> GetPokemonById(int id)
+        {
+            return await GetPokemonByNameOrId(id.ToString());
+        }
+
+        private static async Task<Pokemon> GetPokemonByNameOrId(string name)
+        {
+            string url = $"https://pokeapi.co/api/v2/pokemon/{name}";
+            HttpResponseMessage response = await client.GetAsync(url);
             if (response.IsSuccessStatusCode)
             {
                 string responseBody = await response.Content.ReadAsStringAsync();
@@ -39,11 +55,6 @@ namespace PokeApiCore
             {
                 throw new HttpRequestException();
             }
-        }
-
-        public void GetPokemonById(int id)
-        {
-            throw new NotImplementedException();
         }
     }
 }

@@ -9,10 +9,11 @@ namespace PokeApiConsole
     {
         static async Task Main()
         {
+            PokeApiClient client = new PokeApiClient();
             try
             {
-                PokeApiClient client = new PokeApiClient();
-                Pokemon result = await client.GetPokemonByName("charmander");
+                // Pokemon result = await client.GetPokemonByName("charmander");
+                Pokemon result = await client.GetPokemonById(1);
 
                 Console.WriteLine($"Pokemon Id: {result.id}" +
                     $"\nName: {result.name}" +
