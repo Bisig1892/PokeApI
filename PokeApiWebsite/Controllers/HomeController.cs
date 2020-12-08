@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using PokeApiCore;
 using PokeApiWebsite.Models;
 using System;
 using System.Collections.Generic;
@@ -18,9 +19,33 @@ namespace PokeApiWebsite.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            PokeApiClient myClient = new PokeApiClient();
+            Pokemon result = await myClient.GetPokemonById(1);
+
+            List<string> resultMoves = new List<string>();
+            foreach(Move currMove in result.moves)
+            {
+                resultMoves.Add(currMove.move.name);
+            }
+
+            resultMoves.Sort();
+
+            PokedexEntryViewModel entry = new PokedexEntryViewModel()
+            {
+                Id = result.id,
+                Name = result.Name,
+                Height = result.Height.ToString(),
+                Weight = result.Weight.ToString(),
+                PokedexImageUrl = result.sprites.FrontDefault,
+                MoveList = resultMoves
+            };
+
+            entry.Name = entry.Name[0].ToString().ToUpper() + entry.Name.Substring(1);
+
+
+            return View(entry);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
